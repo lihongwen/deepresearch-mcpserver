@@ -592,7 +592,23 @@ async def main():
         return [
             Tool(
                 name="start_deep_research",
-                description="Start a comprehensive deep research process on a specific question. This tool initiates a structured research workflow that guides the AI through question elaboration, subquestion generation, web searching, content analysis, and report generation. Use this when you need to conduct thorough research on a complex topic.",
+                description=(
+                    "Conduct publication-quality deep research with adaptive methodology. "
+                    "This advanced research tool automatically assesses question complexity (Simple/Moderate/Complex/Highly Complex) "
+                    "and dynamically adjusts research depth and methodology accordingly. "
+                    "\n\n"
+                    "KEY FEATURES:\n"
+                    "• Multi-layer progressive research (Overview → Deep Dive → Expert Analysis)\n"
+                    "• Dynamic hierarchical subquestions (3-8 questions based on complexity)\n"
+                    "• Critical analysis with evidence grading (Strong/Moderate/Weak/Speculative)\n"
+                    "• Source credibility assessment (High/Medium/Low ratings)\n"
+                    "• 9+ professional analysis frameworks (SWOT, PEST, Trend Analysis, Case Studies, etc.)\n"
+                    "• Interdisciplinary synthesis across 7+ perspectives (Technical, Economic, Social, Ethical, etc.)\n"
+                    "• Hypothesis testing and confidence level assignment\n"
+                    "• Publication-quality reports with executive summary, methodology, critical analysis, recommendations, and limitations\n"
+                    "\n"
+                    "Use this for any research question - the system automatically scales from quick comparisons to comprehensive multi-disciplinary analyses."
+                ),
                 inputSchema={
                     "type": "object",
                     "properties": {

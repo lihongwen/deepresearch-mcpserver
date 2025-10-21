@@ -214,8 +214,56 @@ async def main():
     @server.list_tools()
     async def handle_list_tools() -> list[Tool]:
         logger.debug("Handling list_tools request")
-        # We're not exposing any tools since we'll be using Claude's built-in web search
-        return []
+        return [
+            Tool(
+                name="start_deep_research",
+                description="Start a comprehensive deep research process on a specific question. This tool initiates a structured research workflow that guides the AI through question elaboration, subquestion generation, web searching, content analysis, and report generation. Use this when you need to conduct thorough research on a complex topic.",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "research_question": {
+                            "type": "string",
+                            "description": "The research question to investigate in depth",
+                        }
+                    },
+                    "required": ["research_question"],
+                },
+            )
+        ]
+
+    @server.call_tool()
+    async def handle_call_tool(name: str, arguments: dict | None) -> list[TextContent]:
+        logger.debug(f"Handling call_tool request for {name} with args {arguments}")
+        
+        if name != "start_deep_research":
+            logger.error(f"Unknown tool: {name}")
+            raise ValueError(f"Unknown tool: {name}")
+        
+        if not arguments or "research_question" not in arguments:
+            logger.error("Missing required argument: research_question")
+            raise ValueError("Missing required argument: research_question")
+        
+        research_question = arguments["research_question"]
+        
+        # Update research processor state
+        research_processor.update_research_data("question", research_question)
+        research_processor.add_note(
+            f"Research initiated via tool on question: {research_question}"
+        )
+        
+        # Format the prompt template with the research question
+        prompt = PROMPT_TEMPLATE.format(research_question=research_question)
+        
+        logger.debug(
+            f"Generated research guidance for question: {research_question}"
+        )
+        
+        return [
+            TextContent(
+                type="text",
+                text=prompt.strip()
+            )
+        ]
 
     async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
         logger.debug("Server running with stdio transport")
